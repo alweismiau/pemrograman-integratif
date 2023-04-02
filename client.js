@@ -7,7 +7,7 @@ const readline = require("readline").createInterface({
 
 const PORT = process.env.PORT || "3000";
 
-const bookSchema = protoLoader.loadSync("./proto.proto", {
+const songSchema = protoLoader.loadSync("./proto.proto", {
   keepCase: true,
   longs: String,
   enums: String,
@@ -15,19 +15,19 @@ const bookSchema = protoLoader.loadSync("./proto.proto", {
   oneofs: true,
 });
 
-const firestoreProto = grpc.loadPackageDefinition(bookSchema).firestore;
+const firestoreProto = grpc.loadPackageDefinition(songSchema).firestore;
 
 const client = new firestoreProto.Firestore(
   `localhost:${PORT}`,
   grpc.credentials.createInsecure()
 );
 
-function createBook() {
-  readline.question("Enter book id: ", (id) => {
-    readline.question("Enter book title: ", (title) => {
-      readline.question("Enter book author: ", (author) => {
-        readline.question("Enter book year: ", (year) => {
-          client.CreateBook({ id, title, author, year }, (error, response) => {
+function createSong() {
+  readline.question("Enter song id: ", (id) => {
+    readline.question("Enter song title: ", (title) => {
+      readline.question("Enter song author: ", (author) => {
+        readline.question("Enter song year: ", (year) => {
+          client.CreateSong({ id, title, author, year }, (error, response) => {
             if (error) {
               console.error(error);
             } else {
@@ -41,8 +41,8 @@ function createBook() {
   });
 }
 
-function readBook(id) {
-  client.ReadBook({ id }, (error, response) => {
+function readSong(id) {
+  client.ReadSong({ id }, (error, response) => {
     if (error) {
       console.error(error);
     } else {
@@ -52,8 +52,8 @@ function readBook(id) {
   });
 }
 
-function updateBook(id, title, author, year) {
-  client.UpdateBook({ id, title, author, year }, (error, response) => {
+function updateSong(id, title, author, year) {
+  client.UpdateSong({ id, title, author, year }, (error, response) => {
     if (error) {
       console.error(error);
     } else {
@@ -63,8 +63,8 @@ function updateBook(id, title, author, year) {
   });
 }
 
-function deleteBook(id) {
-  client.DeleteBook({ id }, (error, response) => {
+function deleteSong(id) {
+  client.DeleteSong({ id }, (error, response) => {
     if (error) {
       console.error(error);
     } else {
@@ -74,10 +74,10 @@ function deleteBook(id) {
   });
 }
 
-function listBooks() {
-  const call = client.ListBooks({});
-  call.on("data", (book) => {
-    console.log(book);
+function listSongs() {
+  const call = client.ListSongs({});
+  call.on("data", (song) => {
+    console.log(song);
   });
   call.on("end", () => {
     readline.close();
@@ -89,42 +89,43 @@ function listBooks() {
 }
 
 function mainMenu() {
-  console.log("==== Books App ====");
-  console.log("1. Create Book");
-  console.log("2. Read Book");
-  console.log("3. Update Book");
-  console.log("4. Delete Book");
-  console.log("5. List Books");
+  console.log("Halo Apa kabar!");
+  console.log("Hari ini mau ngapain?");
+  console.log("1. Create Song");
+  console.log("2. Read Song");
+  console.log("3. Update Song");
+  console.log("4. Delete Song");
+  console.log("5. List Songs");
   console.log("6. Exit");
 
   readline.question("Choose an option: ", (option) => {
     switch (option) {
       case "1":
-        createBook();
+        createSong();
         break;
       case "2":
-        readline.question("Enter book id: ", (id) => {
-          readBook(id);
+        readline.question("Enter song id: ", (id) => {
+          readSong(id);
         });
         break;
       case "3":
-        readline.question("Enter book id: ", (id) => {
-          readline.question("Enter book title: ", (title) => {
-            readline.question("Enter book author: ", (author) => {
-              readline.question("Enter book year: ", (year) => {
-                updateBook(id, title, author, year);
+        readline.question("Enter song id: ", (id) => {
+          readline.question("Enter song title: ", (title) => {
+            readline.question("Enter song author: ", (author) => {
+              readline.question("Enter song year: ", (year) => {
+                updateSong(id, title, author, year);
               });
             });
           });
         });
         break;
       case "4":
-        readline.question("Enter book id: ", (id) => {
-          deleteBook(id);
+        readline.question("Enter song id: ", (id) => {
+          deleteSong(id);
         });
         break;
       case "5":
-        listBooks();
+        listSongs();
         break;
       case "6":
         console.log("Exiting...");

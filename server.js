@@ -15,7 +15,7 @@ const db = admin.firestore();
 
 const server = new grpc.Server();
 
-const bookSchema = protoLoader.loadSync('./proto.proto', {
+const songSchema = protoLoader.loadSync('./proto.proto', {
   keepCase: true,
   longs: String,
   enums: String,
@@ -23,45 +23,45 @@ const bookSchema = protoLoader.loadSync('./proto.proto', {
   oneofs: true,
 });
 
-const firestoreProto = grpc.loadPackageDefinition(bookSchema).firestore;
+const firestoreProto = grpc.loadPackageDefinition(songSchema).firestore;
 
 server.addService(firestoreProto.Firestore.service, {
-  CreateBook: (call, callback) => {
+  CreateSong: (call, callback) => {
     const { id, title, author, year } = call.request;
-    const bookRef = db.collection('books').doc(id);
-    bookRef.set({ id, title, author, year })
+    const songRef = db.collection('songs').doc(id);
+    songRef.set({ id, title, author, year })
       .then(() => callback(null, { id, title, author, year }))
       .catch((error) => callback(error));
   },
-  ReadBook: (call, callback) => {
+  ReadSong: (call, callback) => {
     const { id } = call.request;
-    const bookRef = db.collection('books').doc(id);
-    bookRef.get()
+    const songRef = db.collection('songs').doc(id);
+    songRef.get()
       .then((doc) => {
         if (!doc.exists) {
-          throw new Error('Book not found');
+          throw new Error('Song not found');
         }
         const { id, title, author, year } = doc.data();
         callback(null, { id, title, author, year });
       })
       .catch((error) => callback(error));
   },
-  UpdateBook: (call, callback) => {
+  UpdateSong: (call, callback) => {
     const { id, title, author, year } = call.request;
-    const bookRef = db.collection('books').doc(id);
-    bookRef.update({ title, author, year })
+    const songRef = db.collection('songs').doc(id);
+    songRef.update({ title, author, year })
       .then(() => callback(null, { id, title, author, year }))
       .catch((error) => callback(error));
   },
-  DeleteBook: (call, callback) => {
+  DeleteSong: (call, callback) => {
     const { id } = call.request;
-    const bookRef = db.collection('books').doc(id);
-    bookRef.delete()
+    const songRef = db.collection('songs').doc(id);
+    songRef.delete()
       .then(() => callback(null, { id }))
       .catch((error) => callback(error));
   },
-  ListBooks: (call) => {
-    const stream = db.collection('books').stream();
+  ListSongs: (call) => {
+    const stream = db.collection('songs').stream();
     stream.on('data', (doc) => {
       const { id, title, author, year } = doc.data();
       call.write({ id, title, author, year });

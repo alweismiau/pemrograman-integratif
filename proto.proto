@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package firestore;
 
-message Book {
+message Song {
   string id = 1;
   string title = 2;
   string author = 3;
@@ -10,11 +10,11 @@ message Book {
 }
 
 service Firestore {
-  rpc CreateBook(Book) returns (Book) {}
-  rpc ReadBook(Book) returns (Book) {}
-  rpc UpdateBook(Book) returns (Book) {}
-  rpc DeleteBook(Book) returns (Book) {}
-  rpc ListBooks(Empty) returns (stream Book) {}
+  rpc CreateSong(Song) returns (Song) {}
+  rpc ReadSong(Song) returns (Song) {}
+  rpc UpdateSong(Song) returns (Song) {}
+  rpc DeleteSong(Song) returns (Song) {}
+  rpc ListSongs(Empty) returns (stream Song) {}
 }
 
 message Empty {}
